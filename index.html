@@ -55,9 +55,9 @@
                 </div>
                 <div>
                     <h1 class="font-mono font-bold tracking-wider text-lg text-white flex items-center gap-2">
-                        EDU_CODE_STUDIO <span class="text-xs px-2 py-0.5 rounded bg-cyber-neon/20 text-cyber-neon border border-cyber-neon/40">v5.0 SHAREABLE</span>
+                        EDU_CODE_STUDIO <span class="text-xs px-2 py-0.5 rounded bg-cyber-neon/20 text-cyber-neon border border-cyber-neon/40">v5.1 CLEAN GENERATOR</span>
                     </h1>
-                    <p class="text-xs text-slate-400 font-mono">Architect: ZEEO // Direct Link Sharing Enabled</p>
+                    <p class="text-xs text-slate-400 font-mono">Architect: ZEEO // Blank Workspace Mode</p>
                 </div>
             </div>
             <div class="flex items-center space-x-2">
@@ -102,7 +102,7 @@
 
                     <div class="mb-4">
                         <label class="block text-xs font-mono text-slate-400 mb-1">MAPEL & TOPIK</label>
-                        <input type="text" id="input-subject" value="Ekonomi // Kebijakan Moneter" class="w-full bg-cyber-bg border border-cyber-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyber-neon font-mono">
+                        <input type="text" id="input-subject" value="" placeholder="Contoh: Matematika // Aljabar Linear" class="w-full bg-cyber-bg border border-cyber-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyber-neon font-mono">
                     </div>
                 </div>
 
@@ -112,21 +112,16 @@
                             <i data-lucide="code" class="w-4 h-4"></i> 2. INPUT KODE / SOAL GAME (JSON)
                         </h2>
                     </div>
+                    <p class="text-xs text-slate-400 mb-2">Masukkan struktur array JSON sesuai format: <code class="text-cyber-neon">[{"q": "Pertanyaan?", "options": ["A", "B", "C", "D"], "answer": "A"}]</code></p>
                     
-                    <textarea id="game-code-input" rows="10" class="w-full bg-cyber-bg border border-cyber-border rounded-lg p-3 font-mono text-xs text-emerald-400 focus:outline-none focus:border-cyber-neon leading-relaxed resize-y">[
+                    <textarea id="game-code-input" rows="10" class="w-full bg-cyber-bg border border-cyber-border rounded-lg p-3 font-mono text-xs text-emerald-400 focus:outline-none focus:border-cyber-neon leading-relaxed resize-y" placeholder="[
   {
-    "q": "Kebijakan bank sentral untuk menjual surat berharga disebut...",
-    "options": ["Open Market Policy", "Cash Ratio", "Discount Policy", "Credit Control"],
-    "answer": "Open Market Policy",
-    "explanation": "Menjual surat berharga mengurangi jumlah uang beredar."
-  },
-  {
-    "q": "Instrumen kuantitatif yang mengatur cadangan minimum bank disebut...",
-    "options": ["Politik Diskonto", "Giro Wajib Minimum", "Imbauan Moral", "Fiskal"],
-    "answer": "Giro Wajib Minimum",
-    "explanation": "Giro wajib minimum mengontrol likuiditas perbankan."
+    &quot;q&quot;: &quot;Pertanyaan di sini...&quot;,
+    &quot;options&quot;: [&quot;Pilihan A&quot;, &quot;Pilihan B&quot;, &quot;Pilihan C&quot;, &quot;Pilihan D&quot;],
+    &quot;answer&quot;: &quot;Pilihan A&quot;,
+    &quot;explanation&quot;: &quot;Penjelasan jawaban...&quot;
   }
-]</textarea>
+]"></textarea>
 
                     <div class="mt-4 flex flex-wrap gap-2 justify-between items-center pt-3 border-t border-cyber-border">
                         <button onclick="compileAndRenderGame()" class="px-4 py-2.5 bg-slate-800 text-white font-bold rounded-lg hover:bg-slate-700 transition font-mono text-xs border border-cyber-border cursor-pointer">
@@ -157,14 +152,15 @@
                             <h2 class="text-sm font-mono font-bold text-white">LIVE PREVIEW RUNTIME</h2>
                         </div>
                         <div id="runtime-meta" class="text-xs font-mono text-cyber-neon">
-                            SMA // Kelas 11
+                            Workspace Kosong
                         </div>
                     </div>
 
                     <div id="live-game-viewport" class="bg-cyber-bg border border-cyber-border rounded-xl p-6 flex-1 flex flex-col justify-center relative min-h-[380px]">
                         <div class="text-center text-slate-500 font-mono text-xs space-y-2">
-                            <i data-lucide="play-circle" class="w-8 h-8 mx-auto opacity-40"></i>
-                            <p>Klik <strong class="text-cyber-neon">"Test Preview"</strong> untuk mencoba game atau <strong class="text-cyber-neon">"GENERATE SHARE LINK"</strong> untuk membagikannya.</p>
+                            <i data-lucide="cpu" class="w-8 h-8 mx-auto opacity-40"></i>
+                            <p>Workspace siap.</p>
+                            <p>Masukkan kode JSON soal Anda di sebelah kiri lalu klik <strong class="text-cyber-neon">"Test Preview"</strong>.</p>
                         </div>
                     </div>
                 </div>
@@ -195,7 +191,7 @@
 
     <!-- FOOTER -->
     <footer class="max-w-7xl mx-auto px-4 py-6 text-center text-xs font-mono text-slate-500 border-t border-cyber-border mt-8">
-        ZEEO // EduGame Code Studio. Share link generator with URL Hash encoding.
+        ZEEO // EduGame Code Studio. Blank Generator Workspace.
     </footer>
 
     <!-- SCRIPT ENGINE -->
@@ -219,7 +215,9 @@
 
         function compileAndRenderGame() {
             try {
-                const codeInput = document.getElementById('game-code-input').value;
+                const codeInput = document.getElementById('game-code-input').value.trim();
+                if (!codeInput) throw new Area("Kode JSON masih kosong.");
+                
                 const parsedQuestions = eval('(' + codeInput + ')');
                 if (!Array.isArray(parsedQuestions)) throw new Error("Format harus Array JSON.");
                 
@@ -229,12 +227,12 @@
                 
                 const grade = document.getElementById('target-grade').value;
                 const level = document.getElementById('target-level').value;
-                const subject = document.getElementById('input-subject').value;
+                const subject = document.getElementById('input-subject').value || "Mata Pelajaran Umum";
                 document.getElementById('runtime-meta').innerText = `${grade} // ${level} // ${subject}`;
 
                 renderPreviewStep();
             } catch(e) {
-                alert("Error format JSON: " + e.message);
+                alert("Gagal melakukan compile. Periksa kembali format JSON Anda!\n\nDetail: " + e.message);
             }
         }
 
@@ -244,7 +242,7 @@
             const idx = activeRuntimeData.currentIndex;
 
             if (idx >= qList.length) {
-                viewport.innerHTML = `<div class="text-center py-8 space-y-3"><h3 class="text-lg font-bold text-white">Selesai!</h3><p class="text-cyber-neon font-mono text-sm">Skor: ${activeRuntimeData.score}</p><button onclick="compileAndRenderGame()" class="px-4 py-2 bg-cyber-neon text-black rounded text-xs font-mono font-bold">Ulangi</button></div>`;
+                viewport.innerHTML = `<div class="text-center py-8 space-y-3"><h3 class="text-lg font-bold text-white">Simulasi Selesai!</h3><p class="text-cyber-neon font-mono text-sm">Skor: ${activeRuntimeData.score}</p><button onclick="compileAndRenderGame()" class="px-4 py-2 bg-cyber-neon text-black rounded text-xs font-mono font-bold">Ulangi Simulasi</button></div>`;
                 return;
             }
             let currentQ = qList[idx];
@@ -264,11 +262,17 @@
 
         function generateShareableLink() {
             try {
+                const codeInput = document.getElementById('game-code-input').value.trim();
+                const parsedQuestions = eval('(' + codeInput + ')');
+                if (!Array.isArray(parsedQuestions) || parsedQuestions.length === 0) {
+                    throw new Error("Masukkan minimal 1 soal dalam format JSON.");
+                }
+
                 const payload = {
                     grade: document.getElementById('target-grade').value,
                     level: document.getElementById('target-level').value,
-                    subject: document.getElementById('input-subject').value,
-                    questions: eval('(' + document.getElementById('game-code-input').value + ')')
+                    subject: document.getElementById('input-subject').value || "Mata Pelajaran Umum",
+                    questions: parsedQuestions
                 };
 
                 const encodedData = btoa(encodeURIComponent(JSON.stringify(payload)));
@@ -277,7 +281,7 @@
                 document.getElementById('share-box').classList.remove('hidden');
                 document.getElementById('share-link-input').value = shareUrl;
             } catch(e) {
-                alert("Gagal membuat link. Pastikan format JSON soal benar.");
+                alert("Gagal membuat link: " + e.message);
             }
         }
 
@@ -285,7 +289,7 @@
             const input = document.getElementById('share-link-input');
             input.select();
             navigator.clipboard.writeText(input.value);
-            alert("Tautan game berhasil disalin! Bagikan ke siswa Anda.");
+            alert("Tautan game berhasil disalin!");
         }
 
         // AUTO LOAD IF OPENED VIA SHARED LINK
