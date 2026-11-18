@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZEEO // EduGame Code Studio & Shareable Generator</title>
+    <title>ZEEO // EduGame Cloud Studio & Neon Controller</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -51,19 +51,22 @@
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
                 <div class="p-2 bg-cyber-neon/10 border border-cyber-neon/40 rounded-lg text-cyber-neon shadow-neon">
-                    <i data-lucide="share-2" class="w-6 h-6"></i>
+                    <i data-lucide="cloud" class="w-6 h-6"></i>
                 </div>
                 <div>
                     <h1 class="font-mono font-bold tracking-wider text-lg text-white flex items-center gap-2">
-                        EDU_CODE_STUDIO <span class="text-xs px-2 py-0.5 rounded bg-cyber-neon/20 text-cyber-neon border border-cyber-neon/40">v5.1 CLEAN GENERATOR</span>
+                        EDU_CLOUD_STUDIO <span class="text-xs px-2 py-0.5 rounded bg-cyber-neon/20 text-cyber-neon border border-cyber-neon/40">v6.0 NEON-BACKED</span>
                     </h1>
-                    <p class="text-xs text-slate-400 font-mono">Architect: ZEEO // Blank Workspace Mode</p>
+                    <p class="text-xs text-slate-400 font-mono">System Architect: ZEEO // Full Online Database Controller</p>
                 </div>
             </div>
             <div class="flex items-center space-x-2">
-                <span id="mode-indicator" class="px-3 py-1 rounded text-xs font-mono bg-cyber-neon/10 text-cyber-neon border border-cyber-neon/30">
-                    Builder Mode
-                </span>
+                <button onclick="switchTab('builder')" id="btn-tab-builder" class="px-3 py-1.5 rounded text-xs font-mono bg-cyber-neon text-black font-bold transition">
+                    Studio Builder
+                </button>
+                <button onclick="switchTab('manager')" id="btn-tab-manager" class="px-3 py-1.5 rounded text-xs font-mono bg-cyber-card border border-cyber-border text-slate-300 hover:text-white transition">
+                    Cloud Game Manager
+                </button>
             </div>
         </div>
     </header>
@@ -71,132 +74,184 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-6">
         
-        <!-- BUILDER VIEW (HIDDEN IF OPENED VIA SHARED LINK) -->
-        <div id="builder-wrapper" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            
-            <!-- LEFT PANEL: CONFIG & CODE INPUT -->
-            <div class="lg:col-span-6 space-y-4">
-                <div class="bg-cyber-card border border-cyber-border rounded-xl p-5 shadow-xl">
-                    <h2 class="text-sm font-mono font-bold text-cyber-neon mb-4 flex items-center gap-2">
-                        <i data-lucide="sliders" class="w-4 h-4"></i> 1. TARGET JENJANG & KELAS
-                    </h2>
-                    
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="block text-xs font-mono text-slate-400 mb-1">JENJANG</label>
-                            <select id="target-grade" onchange="updateClassOptions()" class="w-full bg-cyber-bg border border-cyber-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyber-neon">
-                                <option value="SD">Sekolah Dasar (SD)</option>
-                                <option value="SMP">Sekolah Menengah Pertama (SMP)</option>
-                                <option value="SMA" selected>Sekolah Menengah Atas (SMA/K)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-mono text-slate-400 mb-1">KELAS</label>
-                            <select id="target-level" class="w-full bg-cyber-bg border border-cyber-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyber-neon">
-                                <option value="Kelas 10">Kelas 10</option>
-                                <option value="Kelas 11" selected>Kelas 11</option>
-                                <option value="Kelas 12">Kelas 12</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block text-xs font-mono text-slate-400 mb-1">MAPEL & TOPIK</label>
-                        <input type="text" id="input-subject" value="" placeholder="Contoh: Matematika // Aljabar Linear" class="w-full bg-cyber-bg border border-cyber-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyber-neon font-mono">
-                    </div>
-                </div>
-
-                <div class="bg-cyber-card border border-cyber-border rounded-xl p-5 shadow-xl flex flex-col">
-                    <div class="flex justify-between items-center mb-3">
-                        <h2 class="text-sm font-mono font-bold text-cyber-neon flex items-center gap-2">
-                            <i data-lucide="code" class="w-4 h-4"></i> 2. INPUT KODE / SOAL GAME (JSON)
+        <!-- TAB 1: STUDIO BUILDER -->
+        <section id="tab-builder-view" class="space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Left Panel: Config & Code Input -->
+                <div class="lg:col-span-6 space-y-4">
+                    <div class="bg-cyber-card border border-cyber-border rounded-xl p-5 shadow-xl">
+                        <h2 class="text-sm font-mono font-bold text-cyber-neon mb-4 flex items-center gap-2">
+                            <i data-lucide="sliders" class="w-4 h-4"></i> 1. METADATA GAME & KELAS
                         </h2>
+                        
+                        <div class="grid grid-cols-3 gap-3 mb-4">
+                            <div>
+                                <label class="block text-xs font-mono text-slate-400 mb-1">JENJANG</label>
+                                <select id="target-grade" onchange="updateClassOptions()" class="w-full bg-cyber-bg border border-cyber-border rounded-lg px-2.5 py-2 text-xs text-white focus:outline-none focus:border-cyber-neon">
+                                    <option value="SD">SD</option>
+                                    <option value="SMP">SMP</option>
+                                    <option value="SMA" selected>SMA/K</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-mono text-slate-400 mb-1">KELAS</label>
+                                <select id="target-level" class="w-full bg-cyber-bg border border-cyber-border rounded-lg px-2.5 py-2 text-xs text-white focus:outline-none focus:border-cyber-neon">
+                                    <option value="Kelas 10">Kelas 10</option>
+                                    <option value="Kelas 11" selected>Kelas 11</option>
+                                    <option value="Kelas 12">Kelas 12</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-mono text-slate-400 mb-1">KODE UNIK</label>
+                                <input type="text" id="input-code" value="pai-k11-01" class="w-full bg-cyber-bg border border-cyber-border rounded-lg px-2.5 py-2 text-xs text-cyber-neon font-mono font-bold" placeholder="Cth: eko-10">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 mb-2">
+                            <div>
+                                <label class="block text-xs font-mono text-slate-400 mb-1">JUDUL GAME</label>
+                                <input type="text" id="input-title" value="Kuis Aqidah Akhlak PAI" class="w-full bg-cyber-bg border border-cyber-border rounded-lg px-3 py-2 text-xs text-white font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-mono text-slate-400 mb-1">MAPEL & TOPIK</label>
+                                <input type="text" id="input-subject" value="PAI // Rukun Iman" class="w-full bg-cyber-bg border border-cyber-border rounded-lg px-3 py-2 text-xs text-white font-mono">
+                            </div>
+                        </div>
                     </div>
-                    <p class="text-xs text-slate-400 mb-2">Masukkan struktur array JSON sesuai format: <code class="text-cyber-neon">[{"q": "Pertanyaan?", "options": ["A", "B", "C", "D"], "answer": "A"}]</code></p>
-                    
-                    <textarea id="game-code-input" rows="10" class="w-full bg-cyber-bg border border-cyber-border rounded-lg p-3 font-mono text-xs text-emerald-400 focus:outline-none focus:border-cyber-neon leading-relaxed resize-y" placeholder="[
+
+                    <div class="bg-cyber-card border border-cyber-border rounded-xl p-5 shadow-xl flex flex-col">
+                        <div class="flex justify-between items-center mb-2">
+                            <h2 class="text-sm font-mono font-bold text-cyber-neon flex items-center gap-2">
+                                <i data-lucide="code" class="w-4 h-4"></i> 2. STRUKTUR SOAL JSON
+                            </h2>
+                        </div>
+                        <p class="text-xs text-slate-400 mb-2">Masukkan array JSON soal interaktif:</p>
+                        
+                        <textarea id="game-code-input" rows="9" class="w-full bg-cyber-bg border border-cyber-border rounded-lg p-3 font-mono text-xs text-emerald-400 focus:outline-none focus:border-cyber-neon leading-relaxed resize-y">[
   {
-    &quot;q&quot;: &quot;Pertanyaan di sini...&quot;,
-    &quot;options&quot;: [&quot;Pilihan A&quot;, &quot;Pilihan B&quot;, &quot;Pilihan C&quot;, &quot;Pilihan D&quot;],
-    &quot;answer&quot;: &quot;Pilihan A&quot;,
-    &quot;explanation&quot;: &quot;Penjelasan jawaban...&quot;
+    "q": "Rukun iman yang pertama adalah iman kepada...",
+    "options": ["Kitab Allah", "Allah SWT", "Malaikat", "Rasul"],
+    "answer": "Allah SWT",
+    "explanation": "Iman kepada Allah adalah fondasi utama."
   }
-]"></textarea>
+]</textarea>
 
-                    <div class="mt-4 flex flex-wrap gap-2 justify-between items-center pt-3 border-t border-cyber-border">
-                        <button onclick="compileAndRenderGame()" class="px-4 py-2.5 bg-slate-800 text-white font-bold rounded-lg hover:bg-slate-700 transition font-mono text-xs border border-cyber-border cursor-pointer">
-                            Test Preview
-                        </button>
-                        <button onclick="generateShareableLink()" class="px-5 py-2.5 bg-cyber-neon text-black font-bold rounded-lg hover:bg-emerald-400 transition font-mono text-xs flex items-center gap-2 shadow-neon cursor-pointer">
-                            <i data-lucide="link" class="w-4 h-4"></i> GENERATE SHARE LINK
-                        </button>
+                        <div class="mt-4 flex flex-wrap gap-2 justify-between items-center pt-3 border-t border-cyber-border">
+                            <button onclick="testPreviewGame()" class="px-4 py-2 bg-slate-800 text-white font-bold rounded-lg hover:bg-slate-700 transition font-mono text-xs border border-cyber-border">
+                                Test Preview
+                            </button>
+                            <button onclick="saveGameToCloud()" class="px-5 py-2.5 bg-cyber-neon text-black font-bold rounded-lg hover:bg-emerald-400 transition font-mono text-xs flex items-center gap-2 shadow-neon cursor-pointer">
+                                <i data-lucide="cloud-upload" class="w-4 h-4"></i> SIMPAN KE NEON DATABASE
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- SHARE LINK RESULT BOX -->
-                <div id="share-box" class="hidden bg-cyber-card border border-cyber-neon/50 rounded-xl p-4 shadow-xl space-y-2">
-                    <label class="block text-xs font-mono text-cyber-neon">TAUTAN GAME SIAP DIBAGIKAN KE SISWA:</label>
-                    <div class="flex gap-2">
-                        <input type="text" id="share-link-input" readonly class="w-full bg-cyber-bg border border-cyber-border rounded px-3 py-1.5 text-xs text-slate-300 font-mono">
-                        <button onclick="copyShareLink()" class="px-4 py-1.5 bg-cyber-neon text-black font-bold rounded text-xs font-mono">Salin</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- RIGHT PANEL: LIVE PREVIEW -->
-            <div class="lg:col-span-6">
-                <div class="bg-cyber-card border border-cyber-border rounded-xl p-5 shadow-xl h-full flex flex-col">
-                    <div class="flex justify-between items-center pb-3 border-b border-cyber-border mb-4">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                            <h2 class="text-sm font-mono font-bold text-white">LIVE PREVIEW RUNTIME</h2>
+                <!-- Right Panel: Live Preview -->
+                <div class="lg:col-span-6">
+                    <div class="bg-cyber-card border border-cyber-border rounded-xl p-5 shadow-xl h-full flex flex-col">
+                        <div class="flex justify-between items-center pb-3 border-b border-cyber-border mb-4">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                <h2 class="text-sm font-mono font-bold text-white">LIVE PREVIEW RUNTIME</h2>
+                            </div>
+                            <div id="runtime-meta" class="text-xs font-mono text-cyber-neon">Workspace Siap</div>
                         </div>
-                        <div id="runtime-meta" class="text-xs font-mono text-cyber-neon">
-                            Workspace Kosong
-                        </div>
-                    </div>
 
-                    <div id="live-game-viewport" class="bg-cyber-bg border border-cyber-border rounded-xl p-6 flex-1 flex flex-col justify-center relative min-h-[380px]">
-                        <div class="text-center text-slate-500 font-mono text-xs space-y-2">
-                            <i data-lucide="cpu" class="w-8 h-8 mx-auto opacity-40"></i>
-                            <p>Workspace siap.</p>
-                            <p>Masukkan kode JSON soal Anda di sebelah kiri lalu klik <strong class="text-cyber-neon">"Test Preview"</strong>.</p>
+                        <div id="live-game-viewport" class="bg-cyber-bg border border-cyber-border rounded-xl p-6 flex-1 flex flex-col justify-center relative min-h-[380px]">
+                            <div class="text-center text-slate-500 font-mono text-xs space-y-2">
+                                <i data-lucide="cpu" class="w-8 h-8 mx-auto opacity-40"></i>
+                                <p>Klik "Test Preview" untuk menguji game sebelum diunggah ke cloud.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </section>
 
-        </div>
+        <!-- TAB 2: CLOUD GAME MANAGER (ADMIN CONTROL) -->
+        <section id="tab-manager-view" class="hidden space-y-6">
+            <div class="bg-cyber-card border border-cyber-border rounded-xl p-6 shadow-xl space-y-4">
+                <div class="flex justify-between items-center pb-4 border-b border-cyber-border">
+                    <div>
+                        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i data-lucide="database" class="w-5 h-5 text-cyber-neon"></i>
+                            Daftar Game Cloud (Neon PostgreSQL)
+                        </h2>
+                        <p class="text-xs text-slate-400">Kontrol status aktif, salin tautan, atau tutup akses game kapan saja.</p>
+                    </div>
+                    <button onclick="fetchCloudGames()" class="px-4 py-2 bg-slate-800 text-white font-mono text-xs rounded-lg hover:bg-slate-700 border border-cyber-border flex items-center gap-2">
+                        <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Data
+                    </button>
+                </div>
 
-        <!-- PLAYER VIEW (LOADED AUTOMATICALLY IF OPENED VIA SHARED LINK) -->
-        <div id="player-wrapper" class="hidden max-w-2xl mx-auto">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left font-mono text-xs">
+                        <thead>
+                            <tr class="border-b border-cyber-border text-slate-400">
+                                <th class="py-3 px-4">KODE / JUDUL</th>
+                                <th class="py-3 px-4">JENJANG & KELAS</th>
+                                <th class="py-3 px-4">MAPEL</th>
+                                <th class="py-3 px-4">STATUS KONTROL</th>
+                                <th class="py-3 px-4 text-right">AKSI / TAUTAN</th>
+                            </tr>
+                        </thead>
+                        <tbody id="games-table-body">
+                            <!-- Data injected via JS -->
+                            <tr>
+                                <td colspan="5" class="py-6 text-center text-slate-500">Memuat data dari Neon Database...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- PLAYER VIEW (JIKA DIAKSES VIA /play/KODE) -->
+        <section id="player-wrapper" class="hidden max-w-2xl mx-auto">
             <div class="bg-cyber-card border border-cyber-border rounded-xl p-8 shadow-2xl relative space-y-6">
                 <div class="flex justify-between items-center border-b border-cyber-border pb-4">
                     <div>
-                        <div id="player-meta-badge" class="text-xs font-mono text-cyber-neon mb-1">EDUGAME SHAREABLE</div>
-                        <h3 id="player-title" class="text-xl font-bold text-white">Topik Game</h3>
+                        <div id="player-meta-badge" class="text-xs font-mono text-cyber-neon mb-1">CLOUD GAME PLAYER</div>
+                        <h3 id="player-title" class="text-xl font-bold text-white">Judul Game</h3>
                     </div>
                     <div class="text-right font-mono">
                         <div class="text-xs text-slate-400">SKOR</div>
                         <div id="player-score" class="text-xl font-bold text-cyber-neon">0</div>
                     </div>
                 </div>
-                <div id="player-viewport" class="min-h-[250px] flex flex-col justify-center">
-                    <!-- Dynamic game content for players -->
-                </div>
+                <div id="player-viewport" class="min-h-[250px] flex flex-col justify-center"></div>
             </div>
-        </div>
+        </section>
 
     </main>
 
     <!-- FOOTER -->
     <footer class="max-w-7xl mx-auto px-4 py-6 text-center text-xs font-mono text-slate-500 border-t border-cyber-border mt-8">
-        ZEEO // EduGame Code Studio. Blank Generator Workspace.
+        ZEEO // EduGame Cloud Studio & Neon Controller. Full Online Active.
     </footer>
 
     <!-- SCRIPT ENGINE -->
     <script>
         lucide.createIcons();
+
+        // Ganti dengan URL backend Node.js Anda yang terhubung ke Neon DB
+        const API_BASE_URL = 'http://localhost:3000/api';
+
+        function switchTab(tab) {
+            if (tab === 'builder') {
+                document.getElementById('tab-builder-view').classList.remove('hidden');
+                document.getElementById('tab-manager-view').classList.add('hidden');
+                document.getElementById('btn-tab-builder').className = "px-3 py-1.5 rounded text-xs font-mono bg-cyber-neon text-black font-bold transition";
+                document.getElementById('btn-tab-manager').className = "px-3 py-1.5 rounded text-xs font-mono bg-cyber-card border border-cyber-border text-slate-300 hover:text-white transition";
+            } else {
+                document.getElementById('tab-builder-view').classList.add('hidden');
+                document.getElementById('tab-manager-view').classList.remove('hidden');
+                document.getElementById('btn-tab-manager').className = "px-3 py-1.5 rounded text-xs font-mono bg-cyber-neon text-black font-bold transition";
+                document.getElementById('btn-tab-builder').className = "px-3 py-1.5 rounded text-xs font-mono bg-cyber-card border border-cyber-border text-slate-300 hover:text-white transition";
+                fetchCloudGames();
+            }
+        }
 
         function updateClassOptions() {
             const grade = document.getElementById('target-grade').value;
@@ -213,26 +268,20 @@
 
         let activeRuntimeData = { questions: [], currentIndex: 0, score: 0 };
 
-        function compileAndRenderGame() {
+        function testPreviewGame() {
             try {
                 const codeInput = document.getElementById('game-code-input').value.trim();
-                if (!codeInput) throw new Area("Kode JSON masih kosong.");
+                const parsed = eval('(' + codeInput + ')');
+                if (!Array.isArray(parsed)) throw new Error("Format harus Array JSON.");
                 
-                const parsedQuestions = eval('(' + codeInput + ')');
-                if (!Array.isArray(parsedQuestions)) throw new Error("Format harus Array JSON.");
-                
-                activeRuntimeData.questions = parsedQuestions;
+                activeRuntimeData.questions = parsed;
                 activeRuntimeData.currentIndex = 0;
                 activeRuntimeData.score = 0;
                 
-                const grade = document.getElementById('target-grade').value;
-                const level = document.getElementById('target-level').value;
-                const subject = document.getElementById('input-subject').value || "Mata Pelajaran Umum";
-                document.getElementById('runtime-meta').innerText = `${grade} // ${level} // ${subject}`;
-
+                document.getElementById('runtime-meta').innerText = document.getElementById('input-title').value;
                 renderPreviewStep();
             } catch(e) {
-                alert("Gagal melakukan compile. Periksa kembali format JSON Anda!\n\nDetail: " + e.message);
+                alert("Error JSON: " + e.message);
             }
         }
 
@@ -242,7 +291,7 @@
             const idx = activeRuntimeData.currentIndex;
 
             if (idx >= qList.length) {
-                viewport.innerHTML = `<div class="text-center py-8 space-y-3"><h3 class="text-lg font-bold text-white">Simulasi Selesai!</h3><p class="text-cyber-neon font-mono text-sm">Skor: ${activeRuntimeData.score}</p><button onclick="compileAndRenderGame()" class="px-4 py-2 bg-cyber-neon text-black rounded text-xs font-mono font-bold">Ulangi Simulasi</button></div>`;
+                viewport.innerHTML = `<div class="text-center py-8 space-y-3"><h3 class="text-lg font-bold text-white">Selesai!</h3><p class="text-cyber-neon font-mono text-sm">Skor: ${activeRuntimeData.score}</p><button onclick="testPreviewGame()" class="px-4 py-2 bg-cyber-neon text-black rounded text-xs font-mono font-bold">Ulangi</button></div>`;
                 return;
             }
             let currentQ = qList[idx];
@@ -260,78 +309,137 @@
             renderPreviewStep();
         }
 
-        function generateShareableLink() {
+        // SIMPAN KE NEON DATABASE
+        async function saveGameToCloud() {
             try {
-                const codeInput = document.getElementById('game-code-input').value.trim();
-                const parsedQuestions = eval('(' + codeInput + ')');
-                if (!Array.isArray(parsedQuestions) || parsedQuestions.length === 0) {
-                    throw new Error("Masukkan minimal 1 soal dalam format JSON.");
-                }
-
                 const payload = {
-                    grade: document.getElementById('target-grade').value,
-                    level: document.getElementById('target-level').value,
-                    subject: document.getElementById('input-subject').value || "Mata Pelajaran Umum",
-                    questions: parsedQuestions
+                    game_code: document.getElementById('input-code').value.trim(),
+                    title: document.getElementById('input-title').value.trim(),
+                    grade_level: document.getElementById('target-grade').value,
+                    class_level: document.getElementById('target-level').value,
+                    subject: document.getElementById('input-subject').value.trim(),
+                    questions_json: eval('(' + document.getElementById('game-code-input').value.trim() + ')')
                 };
 
-                const encodedData = btoa(encodeURIComponent(JSON.stringify(payload)));
-                const shareUrl = window.location.origin + window.location.pathname + '#' + encodedData;
-
-                document.getElementById('share-box').classList.remove('hidden');
-                document.getElementById('share-link-input').value = shareUrl;
+                let res = await fetch(`${API_BASE_URL}/games`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                let data = await res.json();
+                if(data.success) {
+                    alert("Berhasil! Game tersimpan secara online di Neon PostgreSQL.");
+                    switchTab('manager');
+                } else {
+                    alert("Gagal: " + data.error);
+                }
             } catch(e) {
-                alert("Gagal membuat link: " + e.message);
+                alert("Koneksi ke server gagal: " + e.message);
             }
         }
 
-        function copyShareLink() {
-            const input = document.getElementById('share-link-input');
-            input.select();
-            navigator.clipboard.writeText(input.value);
-            alert("Tautan game berhasil disalin!");
+        // AMBIL DAFTAR GAME DARI NEON
+        async function fetchCloudGames() {
+            try {
+                let res = await fetch(`${API_BASE_URL}/games`);
+                let games = await res.json();
+                let tbody = document.getElementById('games-table-body');
+                tbody.innerHTML = '';
+
+                if(games.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-500">Belum ada game di database.</td></tr>`;
+                    return;
+                }
+
+                games.forEach(g => {
+                    let playUrl = window.location.origin + window.location.pathname + `?play=${g.game_code}`;
+                    tbody.innerHTML += `
+                        <tr class="border-b border-cyber-border/50 hover:bg-cyber-card/50">
+                            <td class="py-3 px-4 font-bold text-white">${g.game_code}<br><span class="text-slate-400 font-normal">${g.title}</span></td>
+                            <td class="py-3 px-4 text-slate-300">${g.grade_level} // ${g.class_level}</td>
+                            <td class="py-3 px-4 text-slate-300">${g.subject}</td>
+                            <td class="py-3 px-4">
+                                <span class="px-2 py-1 rounded text-[10px] ${g.is_active ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' : 'bg-pink-500/10 text-pink-400 border border-pink-500/30'}">
+                                    ${g.is_active ? 'AKTIF (Dibagikan)' : 'DITUTUP'}
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-right space-x-2">
+                                <button onclick="toggleGameStatus(${g.id}, ${!g.is_active})" class="px-2.5 py-1 bg-slate-800 text-slate-300 rounded hover:text-white border border-cyber-border">
+                                    ${g.is_active ? 'Nonaktifkan' : 'Aktifkan'}
+                                </button>
+                                <button onclick="navigator.clipboard.writeText('${playUrl}'); alert('Tautan game disalin!');" class="px-2.5 py-1 bg-cyber-neon text-black font-bold rounded">
+                                    Salin Link
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch(e) {
+                console.error(e);
+                document.getElementById('games-table-body').innerHTML = `<tr><td colspan="5" class="py-6 text-center text-pink-500">Gagal memuat data dari server backend.</td></tr>`;
+            }
         }
 
-        // AUTO LOAD IF OPENED VIA SHARED LINK
-        window.addEventListener('DOMContentLoaded', () => {
-            if (window.location.hash) {
+        async function toggleGameStatus(id, newStatus) {
+            await fetch(`${API_BASE_URL}/games/${id}/toggle`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ is_active: newStatus })
+            });
+            fetchCloudGames();
+        }
+
+        // CEK APAKAH DIAKSES SEBAGAI SISWA (?play=KODE)
+        window.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const playCode = urlParams.get('play');
+
+            if (playCode) {
                 try {
-                    const hashData = JSON.parse(decodeURIComponent(atob(window.location.hash.substring(1))));
+                    let res = await fetch(`${API_BASE_URL}/play/${playCode}`);
+                    let json = await res.json();
                     
-                    document.getElementById('builder-wrapper').classList.add('hidden');
+                    if(!json.success) {
+                        document.body.innerHTML = `<div class="min-h-screen flex items-center justify-center bg-cyber-bg text-white font-mono text-center p-6"><div><h2 class="text-xl font-bold text-pink-500 mb-2">Akses Ditolak / Game Ditutup</h2><p class="text-slate-400">${json.message}</p></div></div>`;
+                        return;
+                    }
+
+                    let game = json.data;
+                    document.getElementById('tab-builder-view').classList.add('hidden');
+                    document.getElementById('tab-manager-view').classList.add('hidden');
+                    document.querySelector('header').classList.add('hidden');
                     document.getElementById('player-wrapper').classList.remove('hidden');
-                    document.getElementById('mode-indicator').innerText = "Player Mode (Shared Game)";
 
-                    document.getElementById('player-meta-badge').innerText = `${hashData.grade} // ${hashData.level}`;
-                    document.getElementById('player-title').innerText = hashData.subject;
+                    document.getElementById('player-meta-badge').innerText = `${game.grade_level} // ${game.class_level} // ${game.subject}`;
+                    document.getElementById('player-title').innerText = game.title;
 
-                    window.sharedGameData = {
-                        questions: hashData.questions,
+                    window.cloudGameData = {
+                        questions: game.questions_json,
                         currentIndex: 0,
                         score: 0
                     };
 
-                    renderPlayerStep();
+                    renderCloudPlayerStep();
                 } catch(e) {
-                    console.error("Gagal memuat game dari tautan:", e);
+                    alert("Gagal memuat game dari cloud.");
                 }
             }
         });
 
-        function renderPlayerStep() {
-            const viewport = document.getElementById('player-viewport');
-            const data = window.sharedGameData;
-            const idx = data.currentIndex;
+        function renderCloudPlayerStep() {
+            let viewport = document.getElementById('player-viewport');
+            let data = window.cloudGameData;
+            let idx = data.currentIndex;
 
             if (idx >= data.questions.length) {
                 viewport.innerHTML = `
-                    <div class="text-center py-8 space-y-4">
+                    <div class="text-center py-8 space-y-4 font-mono">
                         <div class="w-14 h-14 bg-cyber-neon/10 border border-cyber-neon text-cyber-neon rounded-full flex items-center justify-center mx-auto shadow-neon">
                             <i data-lucide="trophy" class="w-7 h-7"></i>
                         </div>
                         <h4 class="text-xl font-bold text-white">Kuis Selesai!</h4>
-                        <p class="text-slate-400 font-mono">Skor Akhir Anda: <span class="text-cyber-neon font-bold text-lg">${data.score}</span> Poin</p>
-                        <button onclick="window.location.reload()" class="px-6 py-2.5 bg-cyber-neon text-black font-bold rounded-lg font-mono text-xs">Mainkan Lagi</button>
+                        <p class="text-slate-400">Skor Akhir Anda: <span class="text-cyber-neon font-bold text-lg">${data.score}</span> Poin</p>
+                        <button onclick="window.location.reload()" class="px-6 py-2.5 bg-cyber-neon text-black font-bold rounded-lg text-xs font-mono">Mainkan Lagi</button>
                     </div>
                 `;
                 lucide.createIcons();
@@ -346,20 +454,20 @@
                     <div class="space-y-3">
             `;
             currentQ.options.forEach(opt => {
-                html += `<button onclick="handlePlayerAnswer('${opt.replace(/'/g, "\\'")}', '${currentQ.answer.replace(/'/g, "\\'")}')" class="w-full text-left p-3.5 rounded-lg bg-cyber-bg border border-cyber-border hover:border-cyber-neon transition text-white text-sm font-medium">${opt}</button>`;
+                html += `<button onclick="handleCloudPlayerAnswer('${opt.replace(/'/g, "\\'")}', '${currentQ.answer.replace(/'/g, "\\'")}')" class="w-full text-left p-3.5 rounded-lg bg-cyber-bg border border-cyber-border hover:border-cyber-neon transition text-white text-sm font-medium">${opt}</button>`;
             });
             html += `</div></div>`;
             viewport.innerHTML = html;
             lucide.createIcons();
         }
 
-        function handlePlayerAnswer(selected, correct) {
+        function handleCloudPlayerAnswer(selected, correct) {
             if (selected.trim() === correct.trim()) {
-                window.sharedGameData.score += 100;
-                document.getElementById('player-score').innerText = window.sharedGameData.score;
+                window.cloudGameData.score += 100;
+                document.getElementById('player-score').innerText = window.cloudGameData.score;
             }
-            window.sharedGameData.currentIndex++;
-            renderPlayerStep();
+            window.cloudGameData.currentIndex++;
+            renderCloudPlayerStep();
         }
     </script>
 </body>
